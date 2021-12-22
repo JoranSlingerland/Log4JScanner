@@ -2,7 +2,7 @@
 # CVE-2021-44228 Apache Log4j2 2.0-beta9 through 2.12.1 and 2.13.0 through 2.15.0 JNDI Score: 10.0 CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
 # CVE-2021-45046 Apache Log4j 2.15.0 Score: 9.0 (AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H)
 # CVE-2021-45105 Apache Log4j2 versions 2.0-alpha1 through 2.16.0 Score: 7.5 (AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H)
-#intial script created by https://github.com/Maelstromage/Log4jSherlock and edited by @JoranSlingerland
+#Basis of script created by https://github.com/Maelstromage/Log4jSherlock heavily modified by @JoranSlingerland to fit my needs.
 
 #load assembly
 Add-Type -AssemblyName System.IO.Compression
@@ -118,8 +118,12 @@ Function Main{
     $date = get-date -Format "yyyy-MM-dd_hh-mm-ss"
     $results, $vulnerable = Get-SelectedFiles -filetypes $filetypes
 
-    $jsonpath = "$env:SystemDrive\Log4jScanner\Log4jScanner $date.json"
-    set-content -path $jsonpath -value $results
+    if ($vulnerable) {
+        $jsonpath = "$env:SystemDrive\Log4jScanner\Log4jScanner $date.json"
+        set-content -path $jsonpath -value $results
+    } else {
+        remove-item -Path $env:SystemDrive\Log4jScanner -Recurse
+    }
     return $results, $vulnerable
 }
 
